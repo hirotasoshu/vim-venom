@@ -186,10 +186,10 @@ function M.find_virtualenv()
 					if table.getn(lines) == 1 then
 						return lines[1]
 					else
-						M.echo("error", string.format("Erroneous shell output from %s %s", tool, result))
+						vim.notify(string.format("Erroneous shell output from %s %s", tool, result), "error")
 					end
 				else
-					M.echo("warn", "%s project detected but %s was not found in PATH", tool, tool)
+					vim.notify(string.format("%s project detected but %s was not found in PATH", tool, tool), "warn")
 				end
 			end
 		end
@@ -292,7 +292,7 @@ function M.activate()
 	vim.api.nvim_buf_set_var(bufnr, "virtual_env", virtual_env)
 
 	if M.config.echo then
-		M.echo("info", string.format('Activated environment "%s" %s', M.path.basename(virtual_env), virtual_env))
+		vim.notify(string.format('Activated environment "%s" %s', M.path.basename(virtual_env), virtual_env), "info")
 	end
 end
 
@@ -314,7 +314,7 @@ function M.deactivate()
 	-- INFO: Doesn't change python's sys.path.
 
 	if M.config.echo then
-		M.echo("info", string.format('Deactivated environment "%s" %s', M.path.basename(virtual_env), virtual_env))
+		vim.notify(string.format('Deactivated environment "%s" %s', M.path.basename(virtual_env), virtual_env), "info")
 	end
 end
 
@@ -352,33 +352,5 @@ function M.setup(config)
 	end
 end
 
--- Asynchronous echomsg
-function M.echo(type, msg)
-	vim.notify(msg, type)
-	-- local has_notify, notify = pcall(require, "notify")
-	-- if has_notify then
-	-- 	notify(msg, type, { title = "Venom" })
-	-- else
-	-- 	local types = { info = "Identifier", error = "ErrorMsg" }
-	-- 	vim.defer_fn(function()
-	-- 		M._echo(types[type], msg)
-	-- 	end, 10)
-	-- end
-end
-
--- Asynchronous echomsg function callback
-function M._echo(highlight, msg)
-	local msgs = {}
-	if type(msg) == "string" then
-		table.insert(msgs, msg)
-	else
-		msgs = msg
-	end
-	for _, v in ipairs(msgs) do
-		vim.api.nvim_echo({ { "[venom] " .. v, highlight } }, true, {})
-	end
-end
-
 return M
-
 -- vim: set ts=2 sw=2 tw=80 noet :
