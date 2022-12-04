@@ -35,8 +35,7 @@ vim.g.venom_loaded = 1     -- Before plugin loaded
 require('venom').setup()   -- After plugin loaded
 ```
 
-However, the current implement does _not_ support tools (poetry, pipenv)
-and Vim commands and events.
+However, the current implement does _not_ support tools Vim commands and events and requires nvim-lspconfig to reload LSP after environment activation.
 
 The Lua API:
 
@@ -76,7 +75,13 @@ require('venom').setup({
   symbol = '🐍',
   root_patterns = {'.venv', '.python-version'},
   use_tools = true,
-  tools = {},
+  tools = {
+		poetry = {
+			cmd = "poetry env info -p",
+			patterns = { "pyproject.toml" },
+		},
+		pipenv = { cmd = "pipenv --venv", patterns = { "Pipfile" } },
+	},
 })
 ```
 
