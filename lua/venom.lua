@@ -293,6 +293,7 @@ function M.activate()
 
 	if M.config.echo then
 		vim.notify(string.format('Activated environment "%s" %s', M.path.basename(virtual_env), virtual_env), "info")
+		vim.api.nvim_command('LspRestart')
 	end
 end
 
